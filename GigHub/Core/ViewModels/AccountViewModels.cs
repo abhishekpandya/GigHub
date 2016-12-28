@@ -1,0 +1,4 @@
+﻿namespace GigHub.Core.ViewModels
+{
+
+}
