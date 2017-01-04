@@ -4,7 +4,7 @@ using System.Web.Http;
 
 namespace GigHub.Controllers.Api
 {
-    [Authorize]
+    [System.Web.Http.Authorize]
     public class GigsController : ApiController
     {
         private readonly ApplicationDbContext _context;
@@ -16,24 +16,18 @@ namespace GigHub.Controllers.Api
             _unitOfWork = unitOfWork;
         }
 
-        [HttpDelete]
+        [System.Web.Http.HttpDelete]
         public IHttpActionResult Cancle(int id)
         {
             var userId = User.Identity.GetUserId();
 
             var gigs = _unitOfWork.Gigs.GetGigWithAttendees(id);
-            //_context.Gigs
-            //.Include(g => g.Attendances.Select(a => a.Attendee))
-            //.Single(g => g.Id == id && g.ArtistId == userId);
 
-            if (gigs == null)
+            if (gigs == null || gigs.IsCanceled)
                 return NotFound();
 
             if (gigs.ArtistId != userId)
-                return NotFound();
-
-            if (gigs.IsCanceled)
-                return NotFound();
+                return Unauthorized();
 
             gigs.Cancle();
 
